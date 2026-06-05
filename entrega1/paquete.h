@@ -7,7 +7,7 @@
 struct Archivo {
     std::string nombre;
     unsigned char* contenido;
-    int tamaño;
+    int tamano;
     int checksum;
 };
 
