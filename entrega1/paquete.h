@@ -9,31 +9,40 @@ struct Archivo {
     unsigned char* contenido;
     int tamano;
     int checksum;
+    bool comprimido;
+    int tamanoOriginal;
+
+    Archivo();
+    Archivo(const Archivo& otro);
+    Archivo& operator=(const Archivo& otro);
+    ~Archivo();
 };
 
 class Paquete {
-    private:
-        std::string nombre;
-        std::vector<Archivo> archivos;
+private:
+    std::string nombre;
+    std::vector<Archivo> archivos;
 
-        int calcularChecksum(unsigned char* data, int size);
+    int calcularChecksum(unsigned char* data, int size);
 
-    public:
-        Paquete(std::string nombre);
-        Paquete(const Paquete& otro);
-        ~Paquete();
-        Paquete& operator=(const Paquete& otro);
+public:
+    Paquete(std::string nombre);
+    Paquete(const Paquete& otro);
+    ~Paquete();
+    Paquete& operator=(const Paquete& otro);
 
-        void agregarArchivo(std::string nombre, unsigned char* data, int size);
-        void listarArchivos();
-        void extraerArchivo(int indice);
-        bool eliminarArchivo(std::string nombre);
-        int buscarArchivo(std::string nombre);
-        void comprimirArchivo(int indice);
-        void descomprimirArchivo(int indice);
-        bool verificarIntegridad(int indice);
-        std::string getNombre();
-        std::vector<Archivo> getArchivos();
+    void agregarArchivo(std::string nombre, unsigned char* data, int size);
+    void listarArchivos();
+    void extraerArchivo(int indice);
+    bool eliminarArchivo(std::string nombre);
+    int buscarArchivo(std::string nombre);
+
+    void comprimirArchivo(int indice);
+    void descomprimirArchivo(int indice);
+    bool verificarIntegridad(int indice);
+
+    std::string getNombre();
+    const std::vector<Archivo>& getArchivos() const;
 };
 
 #endif

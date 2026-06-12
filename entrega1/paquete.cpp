@@ -4,48 +4,66 @@
 
 using namespace std;
 
+//  ARCHIVO 
+
+Archivo::Archivo() {
+    nombre = "";
+    contenido = nullptr;
+    tamano = 0;
+    checksum = 0;
+    comprimido = false;
+    tamanoOriginal = 0;
+}
+
+Archivo::Archivo(const Archivo& otro) {
+    nombre = otro.nombre;
+    tamano = otro.tamano;
+    checksum = otro.checksum;
+    comprimido = otro.comprimido;
+    tamanoOriginal = otro.tamanoOriginal;
+
+    contenido = new unsigned char[tamano];
+    memcpy(contenido, otro.contenido, tamano);
+}
+
+Archivo& Archivo::operator=(const Archivo& otro) {
+    if (this != &otro) {
+        delete[] contenido;
+
+        nombre = otro.nombre;
+        tamano = otro.tamano;
+        checksum = otro.checksum;
+        comprimido = otro.comprimido;
+        tamanoOriginal = otro.tamanoOriginal;
+
+        contenido = new unsigned char[tamano];
+        memcpy(contenido, otro.contenido, tamano);
+    }
+    return *this;
+}
+
+Archivo::~Archivo() {
+    delete[] contenido;
+}
+
+//  PAQUETE 
+
 Paquete::Paquete(string nombre) {
     this->nombre = nombre;
-
 }
 
 Paquete::Paquete(const Paquete& otro) {
     nombre = otro.nombre;
-    for (int i = 0; i < otro.archivos.size(); i++) {
-        Archivo nuevo;
-        nuevo.nombre = otro.archivos[i].nombre;
-        nuevo.tamano = otro.archivos[i].tamano;
-        nuevo.contenido = new unsigned char[nuevo.tamano];
-        memcpy(nuevo.contenido, otro.archivos[i].contenido, nuevo.tamano);
-        nuevo.checksum = otro.archivos[i].checksum;
-        archivos.push_back(nuevo);
-    }
+    archivos = otro.archivos;
 }
 
-Paquete::~Paquete() {
-    for (int i = 0; i < archivos.size(); i++) {
-        delete[] archivos[i].contenido;
-    }
-}
+Paquete::~Paquete() {}
 
 Paquete& Paquete::operator=(const Paquete& otro) {
     if (this != &otro) {
-        for (int i = 0; i < archivos.size(); i++) {
-            delete[] archivos[i].contenido;
-        }
-
-        archivos.clear();
-        for (int i = 0; i < otro.archivos.size(); i++) {
-            Archivo nuevo;
-            nuevo.nombre = otro.archivos[i].nombre;
-            nuevo.tamano = otro.archivos[i].tamano;
-            nuevo.contenido = new unsigned char[nuevo.tamano];
-            memcpy(nuevo.contenido, otro.archivos[i].contenido, nuevo.tamano);
-            nuevo.checksum = otro.archivos[i].checksum;
-            archivos.push_back(nuevo);
-        }
+        nombre = otro.nombre;
+        archivos = otro.archivos;
     }
-   
     return *this;
 }
 
@@ -58,126 +76,168 @@ int Paquete::calcularChecksum(unsigned char* data, int size) {
 }
 
 void Paquete::agregarArchivo(string nombre, unsigned char* data, int size) {
-    Archivo nuevo;
-    nuevo.nombre = nombre;
-    nuevo.tamano = size;
-    nuevo.contenido = new unsigned char[size];
-    memcpy(nuevo.contenido, data, size);
-    nuevo.checksum = calcularChecksum(data, size);
-    archivos.push_back(nuevo);
-    cout << "Archivo '" << nombre << "' agregado a '" << this->nombre << "'" << endl;
+    Archivo a;
+
+    a.nombre = nombre;
+    a.tamano = size;
+    a.tamanoOriginal = size;
+    a.comprimido = false;
+
+    a.contenido = new unsigned char[size];
+    memcpy(a.contenido, data, size);
+
+    a.checksum = calcularChecksum(data, size);
+
+    archivos.push_back(a);
+
+    cout << "Archivo agregado: " << nombre << endl;
+}
+
+void Paquete::listarArchivos() {
+    cout << "Paquete: " << nombre << endl;
+
+    for (int i = 0; i < archivos.size(); i++) {
+        cout << "[" << i << "] " << archivos[i].nombre
+             << " (" << archivos[i].tamano << " bytes)";
+
+        if (archivos[i].comprimido)
+            cout << " [COMPRIMIDO]";
+
+        cout << endl;
+    }
 }
 
 void Paquete::extraerArchivo(int indice) {
-    if (indice < 0 || indice >= archivos.size()){
-        cout << "Indice invalido" << endl;
-        return;
-    }
+    if (indice < 0 || indice >= archivos.size()) return;
 
-    cout << "Contenido de '" << archivos[indice].nombre << "'  " << endl;
-    cout << "Tamano: " << archivos[indice].tamano << " bytes" << endl;
-    cout << "Checksum: " << archivos[indice].checksum << endl;
+    Archivo& a = archivos[indice];
+
+    cout << "Archivo: " << a.nombre << endl;
+    cout << "Tamano: " << a.tamano << endl;
+    cout << "Checksum: " << a.checksum << endl;
+
     cout << "Contenido: ";
 
-    for (int i = 0; i < archivos[indice].tamano && i < 200; i++) {
-        if (archivos[indice].contenido[i] >= 32 && archivos[indice].contenido[i] <= 126) {
-            cout << archivos[indice].contenido[i];
-        } else {
-            cout << "[" << (int)archivos[indice].contenido[i] << "]";
-        }
+    for (int i = 0; i < a.tamano; i++) {
+        cout << (int)a.contenido[i] << " ";
     }
 
-    if (archivos[indice].tamano > 200) cout << "...";
     cout << endl;
 }
 
 bool Paquete::eliminarArchivo(string nombre) {
     for (int i = 0; i < archivos.size(); i++) {
         if (archivos[i].nombre == nombre) {
-            delete[] archivos[i].contenido;
             archivos.erase(archivos.begin() + i);
-            cout << "Archivo '" << nombre << "' eliminado" << endl;
+            cout << "Archivo eliminado";
             return true;
         }
-    }            
-
-    cout << "Archivo '" << nombre << "' no encontrado" << endl;
+    }
     return false;
 }
 
 int Paquete::buscarArchivo(string nombre) {
     for (int i = 0; i < archivos.size(); i++) {
         if (archivos[i].nombre == nombre) {
-           cout << "Archivo '" << nombre << "' encontrado en indice " << i << endl;
+            cout << "Encontrado en indice " << i << endl;
             return i;
         }
     }
-
-    cout << "Archivo '" << nombre << "' no encontrado" << endl;
+    cout << "No encontrado";
     return -1;
 }
+
+//  COMPRESION 
 
 void Paquete::comprimirArchivo(int indice) {
     if (indice < 0 || indice >= archivos.size()) return;
 
     Archivo& a = archivos[indice];
-    int originalSize = a.tamano;
 
-    unsigned char* comprimido = new unsigned char[originalSize * 2];
-    int compIndex = 0;
+    if (a.comprimido) return;
 
-    for (int i = 0; i < originalSize; i++) {
+    unsigned char* temp = new unsigned char[a.tamano * 2];
+    int j = 0;
+
+    for (int i = 0; i < a.tamano; i++) {
         int count = 1;
-        while (i + 1 < originalSize && a.contenido[i] == a.contenido[i + 1] && count < 255) {
+
+        while (i + 1 < a.tamano && a.contenido[i] == a.contenido[i + 1] && count < 255) {
             count++;
             i++;
         }
 
-        comprimido[compIndex++] = a.contenido[i];
-        comprimido[compIndex++] = count;
+        temp[j++] = a.contenido[i];
+        temp[j++] = count;
     }
 
-    int compSize = compIndex;
-    double ratio = (double)compSize / originalSize * 100;
+    delete[] a.contenido;
 
-    cout << "Compresion RLE:" << endl;
-    cout << " Original:  " << originalSize << " bytes" << endl;
-    cout << " Comprimido: " << compSize << " bytes" << endl;
-    cout << " Ratio: " << ratio << " % del original" << endl;
+    a.contenido = new unsigned char[j];
+    memcpy(a.contenido, temp, j);
 
-    delete[] comprimido;
+    a.tamano = j;
+    a.comprimido = true;
+
+    delete[] temp;
+
+    cout << "Archivo comprimido";
 }
 
-bool Paquete::verificarIntegridad(int indice) {
-    if (indice < 0 || indice >= archivos.size()) {
-        cout << "Indice invalido" << endl;
-        return false;
-    }
+//  DESCOMPRESION
+
+void Paquete::descomprimirArchivo(int indice) {
+    if (indice < 0 || indice >= archivos.size()) return;
 
     Archivo& a = archivos[indice];
-    int checksumActual = calcularChecksum(a.contenido, a.tamano);
 
-    cout << "Verificando integridad de '" << a.nombre << "':" << endl;
-    cout << " Checksum almacenado: " << a.checksum << endl;
-    cout << " Checksum calculado: " << checksumActual << endl;
+    if (!a.comprimido) return;
 
-    if (a.checksum == checksumActual) {
-        cout << " INTEGRO" << endl;
-        return true;
-    } else {
-        cout << " CORRUPTO" << endl;
-        return false;
+    unsigned char* temp = new unsigned char[a.tamanoOriginal];
+
+    int j = 0;
+
+    for (int i = 0; i < a.tamano; i += 2) {
+        unsigned char val = a.contenido[i];
+        unsigned char count = a.contenido[i + 1];
+
+        for (int k = 0; k < count; k++) {
+            temp[j++] = val;
+        }
     }
+
+    delete[] a.contenido;
+
+    a.contenido = new unsigned char[a.tamanoOriginal];
+    memcpy(a.contenido, temp, a.tamanoOriginal);
+
+    a.tamano = a.tamanoOriginal;
+    a.comprimido = false;
+
+    delete[] temp;
+
+    cout << "Archivo descomprimido";
+}
+
+// INTEGRIDAD 
+
+bool Paquete::verificarIntegridad(int indice) {
+    if (indice < 0 || indice >= archivos.size()) return false;
+
+    Archivo& a = archivos[indice];
+
+    int calc = calcularChecksum(a.contenido, a.tamano);
+
+    cout << "Checksum esperado: " << a.checksum << endl;
+    cout << "Checksum actual: " << calc << endl;
+
+    return calc == a.checksum;
 }
 
 string Paquete::getNombre() {
     return nombre;
 }
 
-vector<Archivo> Paquete::getArchivos() {
+const vector<Archivo>& Paquete::getArchivos() const {
     return archivos;
 }
-    
-
-    
-
