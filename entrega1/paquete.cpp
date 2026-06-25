@@ -241,3 +241,68 @@ string Paquete::getNombre() {
 const vector<Archivo>& Paquete::getArchivos() const {
     return archivos;
 }
+
+bool Paquete::agregarArchivoReal(string ruta) {
+
+    ifstream archivo(ruta);
+
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir el archivo" << endl;
+        return false;
+    }
+
+    string contenido;
+    string linea;
+
+    while (getline(archivo, linea)) {
+        contenido += linea;
+        contenido += "\n";
+    }
+
+    archivo.close();
+
+    unsigned char* buffer =
+        new unsigned char[contenido.size()];
+
+    memcpy(buffer,
+           contenido.c_str(),
+           contenido.size());
+
+    agregarArchivo(ruta,
+                   buffer,
+                   contenido.size());
+
+    delete[] buffer;
+
+    cout << "Archivo importado correctamente" << endl;
+
+    return true;
+}
+
+bool Paquete::extraerArchivoDisco(int indice,
+                                  string ruta) {
+
+    if (indice < 0 || indice >= archivos.size()) {
+        return false;
+    }
+
+    ofstream archivo(ruta);
+
+    if (!archivo.is_open()) {
+        cout << "No se pudo crear el archivo" << endl;
+        return false;
+    }
+
+    Archivo& a = archivos[indice];
+
+    for (int i = 0; i < a.tamano; i++) {
+        archivo << (char)a.contenido[i];
+    }
+
+    archivo.close();
+
+    cout << "Archivo extraido correctamente" << endl;
+
+    return true;
+}
+

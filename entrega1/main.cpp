@@ -114,11 +114,38 @@ int main() {
             }
         }
 
-        else if (opcion != 10) {
-            cout << "Opcion invalida";
+        else if (opcion == 10) {
+            int p;
+            string ruta;
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                cout << "Ruta del archivo: ";
+                cin >> ruta;    
+                paquetes[p].agregarArchivoReal(ruta);
+            }
         }
 
-    } while (opcion != 10);
+        else if (opcion == 11) {
+            int p;
+            int a;
+            string ruta;
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                paquetes[p].listarArchivos();
+                cout << "Archivo: ";
+                cin >> a;
+                cout << "Ruta destino: ";
+                cin >> ruta;
+
+                paquetes[p].extraerArchivoDisco(a, ruta);
+            }
+        }
+
+    } while (opcion != 12);
 
     return 0;
 }
@@ -162,7 +189,9 @@ void mostrarMenu() {
     cout << "7. Fusionar paquetes" << endl;
     cout << "8. Comparar duplicados" << endl;
     cout << "9. Descomprimir archivo" << endl;
-    cout << "10. Salir" << endl;
+    cout << "10. Agregar archivo real" << endl;
+    cout << "11. Extraer archivo al disco" << endl;
+    cout << "12. Salir" << endl;
 
     cout << " " << endl;
 
