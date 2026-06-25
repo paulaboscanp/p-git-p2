@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 struct Archivo {
     std::string nombre;
@@ -31,6 +32,7 @@ public:
     ~Paquete();
     Paquete& operator=(const Paquete& otro);
 
+    // Entrega 1
     void agregarArchivo(std::string nombre, unsigned char* data, int size);
     void listarArchivos();
     void extraerArchivo(int indice);
@@ -40,6 +42,14 @@ public:
     void comprimirArchivo(int indice);
     void descomprimirArchivo(int indice);
     bool verificarIntegridad(int indice);
+
+    // Entrega 2
+    bool agregarArchivoReal(std::string ruta);
+    bool extraerArchivodISCO(int indice, std::string ruta);
+    bool exportarIndice(std::string archivo);
+    bool guardarPaqueteTXT(std::string archivo);
+    bool cargarPaqueteTXT(std::string archivo);
+    void mostrarInformacion();
 
     std::string getNombre();
     const std::vector<Archivo>& getArchivos() const;
