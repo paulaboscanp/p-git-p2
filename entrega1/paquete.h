@@ -50,7 +50,7 @@ public:
     bool guardarPaqueteTXT(std::string archivo);
     bool cargarPaqueteTXT(std::string archivo);
     void mostrarInformacion();
-
+//
     std::string getNombre();
     const std::vector<Archivo>& getArchivos() const;
 };
