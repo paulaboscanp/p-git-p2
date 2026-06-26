@@ -345,3 +345,74 @@ bool Paquete::exportarIndice(string archivoSalida) {
 
     return true;
 }
+
+bool Paquete::guardarPaqueteTXT(string ruta) {
+    ofstream archivo(ruta);
+
+    if (!archivo.is_open()) {
+        cout << "No se pudo crear el archivo" << endl;
+        return false;
+    }
+
+    archivo << nombre << endl;
+    archivo << archivos.size() << endl;
+
+    for (int i = 0; i < archivos.size(); i++) {
+        archivo << archivos[i].nombre << endl;
+        archivo << archivos[i].tamano << endl;
+
+        for (int j = 0; j < archivos[i].tamano; j++) {
+            archivo << (int)archivos[i].contenido[j] << " ";
+        }
+
+        archivo << endl;
+    }
+
+    archivo.close();
+    cout << "Paquete guardado correctamente" << endl;
+    return true;
+}
+
+bool Paquete::cargarPaqueteTXT(string ruta) {
+    ifstream archivo(ruta);
+
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir el archivo" << endl;
+        return false;
+    }
+
+    archivos.clear();
+
+    getline(archivo, nombre);
+
+    int cantidad;
+    archivo >> cantidad;
+    archivo.ignore();
+
+    for (int i = 0; i < cantidad; i++) {
+        string nombreArchivo;
+        getline(archivo, nombreArchivo);
+
+        int tamano;
+        archivo >> tamano;
+
+        unsigned char* buffer =
+            new unsigned char[tamano];
+        for (int j = 0; j < tamano; j++) {
+            int valor;
+            archivo >> valor;
+            buffer[j] = valor;
+        }
+
+        archivo.ignore();
+        agregarArchivo(nombreArchivo,
+                       buffer,
+                       tamano);
+
+        delete[] buffer;
+    }
+
+    archivo.close();
+    cout << "Paquete cargado correctamente" << endl;
+    return true;
+}

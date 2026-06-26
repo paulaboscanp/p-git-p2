@@ -170,7 +170,35 @@ int main() {
             }
         }
 
-    } while (opcion != 14);
+        else if (opcion == 14) {
+            int p;
+            string ruta;
+
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                cout << "Archivo TXT: ";
+                cin >> ruta;
+                paquetes[p].guardarPaqueteTXT(ruta);
+            }
+        }
+
+        else if (opcion == 15) {
+            int p;
+            string ruta;
+
+            cout << "Paquete destino: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                cout << "Archivo TXT: ";
+                cin >> ruta;
+                paquetes[p].cargarPaqueteTXT(ruta);
+            }
+        }
+
+    } while (opcion != 16);
 
     return 0;
 }
@@ -218,7 +246,9 @@ void mostrarMenu() {
     cout << "11. Extraer archivo al disco" << endl;
     cout << "12. Exportar indice" << endl;
     cout << "13. Ver informacion del paquete" << endl;
-    cout << "14. Salir" << endl;
+    cout << "14. Guardar paquete TXT" << endl;
+    cout << "15. Cargar paquete TXT" << endl;
+    cout << "16. Salir" << endl;
 
     cout << " " << endl;
 
