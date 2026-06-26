@@ -306,3 +306,42 @@ bool Paquete::extraerArchivoDisco(int indice,
     return true;
 }
 
+void Paquete::mostrarInformacion() {
+
+    int totalBytes = 0;
+
+    for (int i = 0; i < archivos.size(); i++) {
+        totalBytes += archivos[i].tamano;
+    }
+
+    cout << "INFORMACION DEL PAQUETE" << endl;
+    cout << "Nombre: " << nombre << endl;
+    cout << "Cantidad de archivos: " << archivos.size() << endl;
+    cout << "Tamano total: " << totalBytes << " bytes" << endl;
+}
+
+bool Paquete::exportarIndice(string archivoSalida) {
+
+    ofstream archivo(archivoSalida);
+
+    if (!archivo.is_open()) {
+        cout << "No se pudo crear el archivo" << endl;
+        return false;
+    }
+
+    archivo << "Nombre,Tamano,Checksum\n";
+
+    for (int i = 0; i < archivos.size(); i++) {
+
+        archivo << archivos[i].nombre << ","
+                << archivos[i].tamano << ","
+                << archivos[i].checksum
+                << "\n";
+    }
+
+    archivo.close();
+
+    cout << "Indice exportado correctamente" << endl;
+
+    return true;
+}

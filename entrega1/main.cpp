@@ -145,7 +145,32 @@ int main() {
             }
         }
 
-    } while (opcion != 12);
+        else if (opcion == 12) {
+            int p;
+            string archivo;
+
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                cout << "Nombre del archivo: ";
+                cin >> archivo;
+                paquetes[p].exportarIndice(archivo);
+            }
+        }
+
+        else if (opcion == 13) {
+            int p;
+
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+                paquetes[p].mostrarInformacion();
+            }
+        }
+
+    } while (opcion != 14);
 
     return 0;
 }
@@ -191,7 +216,9 @@ void mostrarMenu() {
     cout << "9. Descomprimir archivo" << endl;
     cout << "10. Agregar archivo real" << endl;
     cout << "11. Extraer archivo al disco" << endl;
-    cout << "12. Salir" << endl;
+    cout << "12. Exportar indice" << endl;
+    cout << "13. Ver informacion del paquete" << endl;
+    cout << "14. Salir" << endl;
 
     cout << " " << endl;
 

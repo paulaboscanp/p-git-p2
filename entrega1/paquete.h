@@ -45,7 +45,7 @@ public:
 
     // Entrega 2
     bool agregarArchivoReal(std::string ruta);
-    bool extraerArchivodISCO(int indice, std::string ruta);
+    bool extraerArchivoDisco(int indice, std::string ruta);
     bool exportarIndice(std::string archivo);
     bool guardarPaqueteTXT(std::string archivo);
     bool cargarPaqueteTXT(std::string archivo);
