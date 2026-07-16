@@ -361,21 +361,76 @@ int main() {
 
         }
 
-        // Finaliza el programa
-        else if (opcion == 16) {
+        // Importar archivo binario
+    else if (opcion == 16) {
 
-            cout << endl;
-            cout << "Hasta luego." << endl;
+        int p;
+        string ruta;
+
+        cout << "Paquete: ";
+        cin >> p;
+
+        if (p >= 0 && p < paquetes.size()) {
+
+            cout << "Ruta del archivo: ";
+            cin >> ruta;
+
+            paquetes[p].importarArchivoBinario(ruta);
 
         }
-
         else {
 
-            cout << "Opcion invalida." << endl;
+            cout << "Paquete invalido." << endl;
 
         }
 
-    } while (opcion != 16);
+    }
+
+    // Exportar archivo binario
+    else if (opcion == 17) {
+
+        int p;
+        int a;
+        string ruta;
+
+        cout << "Paquete: ";
+        cin >> p;
+
+        if (p >= 0 && p < paquetes.size()) {
+
+            paquetes[p].listarArchivos();
+
+            cout << "Archivo: ";
+            cin >> a;
+
+            cout << "Ruta destino: ";
+            cin >> ruta;
+
+            paquetes[p].exportarArchivoBinario(a,
+                                            ruta);
+
+        }
+        else {
+
+            cout << "Paquete invalido." << endl;
+
+        }
+
+    }
+
+    // Finaliza el programa
+    else if (opcion == 18) {
+
+    cout << endl;
+    cout << "Hasta luego." << endl;
+
+}
+
+        else {
+            cout << "Opcion invalida." << endl;
+        }
+
+    } while (opcion != 18);
 
     return 0;
 }
@@ -438,7 +493,9 @@ void mostrarMenu() {
     cout << "13. Ver informacion del paquete" << endl;
     cout << "14. Guardar paquete TXT" << endl;
     cout << "15. Cargar paquete TXT" << endl;
-    cout << "16. Salir" << endl;
+    cout << "16. Importar archivo binario" << endl;
+    cout << "17. Exportar archivo binario" << endl;
+    cout << "18. Salir" << endl;
 
     cout << endl;
 

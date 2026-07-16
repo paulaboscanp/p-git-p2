@@ -737,3 +737,148 @@ bool Paquete::cargarPaqueteTXT(string ruta) {
 
     return true;
 }
+
+// Entrega 3
+
+// Calcula un checksum utilizando XOR
+int Paquete::calcularChecksumBinario(unsigned char* data,
+                                     int size) {
+
+    int checksum = 0;
+
+    for (int i = 0; i < size; i++) {
+
+        checksum ^= data[i];
+
+    }
+
+    return checksum;
+
+}
+
+// Escribe una cadena en formato binario
+void Paquete::escribirCadena(ofstream& archivo,
+                             const string& texto) {
+
+    int longitud = texto.size();
+
+    archivo.write(
+        reinterpret_cast<char*>(&longitud),
+        sizeof(longitud));
+
+    archivo.write(
+        texto.c_str(),
+        longitud);
+
+}
+
+// Lee una cadena desde un archivo binario
+string Paquete::leerCadena(ifstream& archivo) {
+
+    int longitud;
+
+    archivo.read(
+        reinterpret_cast<char*>(&longitud),
+        sizeof(longitud));
+
+    string texto;
+
+    texto.resize(longitud);
+
+    archivo.read(
+        &texto[0],
+        longitud);
+
+    return texto;
+
+}
+
+// IMPORTACION Y EXPORTACION DE ARCHIVOS BINARIOS (E3)
+
+// Importa cualquier archivo utilizando modo binario
+bool Paquete::importarArchivoBinario(string ruta) {
+
+    ifstream archivo(ruta,
+                     ios::binary);
+
+    if (!archivo.is_open()) {
+
+        cout << "No se pudo abrir el archivo."
+             << endl;
+
+        return false;
+
+    }
+
+    archivo.seekg(0, ios::end);
+
+    int tamano =
+        archivo.tellg();
+
+    archivo.seekg(0, ios::beg);
+
+    unsigned char* buffer =
+        new unsigned char[tamano];
+
+    archivo.read(
+        reinterpret_cast<char*>(buffer),
+        tamano);
+
+    archivo.close();
+
+    filesystem::path rutaArchivo(ruta);
+
+    agregarArchivo(rutaArchivo.filename().string(),
+                   buffer,
+                   tamano);
+
+    delete[] buffer;
+
+    cout << "Archivo binario importado correctamente."
+         << endl;
+
+    return true;
+
+}
+
+// Exporta un archivo binario al disco
+bool Paquete::exportarArchivoBinario(int indice,
+                                     string ruta) {
+
+    if (indice < 0 ||
+        indice >= archivos.size()) {
+
+        cout << "Indice invalido."
+             << endl;
+
+        return false;
+
+    }
+
+    ofstream archivo(ruta,
+                     ios::binary);
+
+    if (!archivo.is_open()) {
+
+        cout << "No se pudo crear el archivo."
+             << endl;
+
+        return false;
+
+    }
+
+    Archivo& a =
+        archivos[indice];
+
+    archivo.write(
+        reinterpret_cast<char*>(a.contenido),
+        a.tamano);
+
+    archivo.close();
+
+    cout << "Archivo binario exportado correctamente."
+         << endl;
+
+    return true;
+
+}
