@@ -418,19 +418,163 @@ int main() {
 
     }
 
-    // Finaliza el programa
-    else if (opcion == 18) {
+        // ENTREGA 3 - PAQUETES BINARIOS (.pkg)
 
-    cout << endl;
-    cout << "Hasta luego." << endl;
+        // Guardar paquete a .pkg
+        else if (opcion == 18) {
 
-}
+            int p;
+            string ruta;
+
+            cout << "Paquete: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+
+                cout << "Nombre del archivo .pkg: ";
+                cin >> ruta;
+
+                paquetes[p].guardarPaquetePKG(ruta);
+
+            }
+            else {
+
+                cout << "Paquete invalido." << endl;
+
+            }
+
+        }
+
+        // Cargar paquete desde .pkg
+        else if (opcion == 19) {
+
+            int p;
+            string ruta;
+
+            cout << "Paquete destino: ";
+            cin >> p;
+
+            if (p >= 0 && p < paquetes.size()) {
+
+                cout << "Archivo .pkg: ";
+                cin >> ruta;
+
+                paquetes[p].cargarPaquetePKG(ruta);
+
+            }
+            else {
+
+                cout << "Paquete invalido." << endl;
+
+            }
+
+        }
+
+        // Verificar integridad del .pkg
+        else if (opcion == 20) {
+
+            string ruta;
+
+            cout << "Archivo .pkg: ";
+            cin >> ruta;
+
+            if (paquetes.size() > 0) {
+
+                paquetes[0].verificarPKG(ruta);
+
+            }
+            else {
+
+                cout << "No hay paquetes disponibles." << endl;
+
+            }
+
+        }
+
+        // Extraer archivo rapido
+        else if (opcion == 21) {
+
+            string nombreArchivo;
+            string ruta;
+
+            cout << "Nombre del archivo a extraer: ";
+            cin >> nombreArchivo;
+
+            cout << "Ruta del .pkg: ";
+            cin >> ruta;
+
+            if (paquetes.size() > 0) {
+
+                paquetes[0].extraerRapido(nombreArchivo, ruta);
+
+            }
+            else {
+
+                cout << "No hay paquetes disponibles." << endl;
+
+            }
+
+        }
+
+        // Listar contenido rapido
+        else if (opcion == 22) {
+
+            string ruta;
+
+            cout << "Ruta del .pkg: ";
+            cin >> ruta;
+
+            if (paquetes.size() > 0) {
+
+                paquetes[0].listarRapido(ruta);
+
+            }
+            else {
+
+                cout << "No hay paquetes disponibles." << endl;
+
+            }
+
+        }
+
+        // Comparar TXT vs PKG
+        else if (opcion == 23) {
+
+            string txt;
+            string pkg;
+
+            cout << "Archivo TXT: ";
+            cin >> txt;
+
+            cout << "Archivo PKG: ";
+            cin >> pkg;
+
+            if (paquetes.size() > 0) {
+
+                paquetes[0].compararTXTvsPKG(txt, pkg);
+
+            }
+            else {
+
+                cout << "No hay paquetes disponibles." << endl;
+
+            }
+
+        }
+
+        // Salir
+        else if (opcion == 24) {
+
+            cout << endl;
+            cout << "Hasta luego." << endl;
+
+        }
 
         else {
             cout << "Opcion invalida." << endl;
         }
 
-    } while (opcion != 18);
+    } while (opcion != 24);
 
     return 0;
 }
@@ -474,9 +618,9 @@ void inicializarDatos(vector<Paquete>& paquetes) {
 void mostrarMenu() {
 
     cout << endl;
-    cout << "===================================" << endl;
+    cout << " " << endl;
     cout << "      GESTOR DE PAQUETES" << endl;
-    cout << "===================================" << endl;
+    cout << " " << endl;
 
     cout << "1.  Ver paquetes" << endl;
     cout << "2.  Extraer archivo" << endl;
@@ -495,7 +639,14 @@ void mostrarMenu() {
     cout << "15. Cargar paquete TXT" << endl;
     cout << "16. Importar archivo binario" << endl;
     cout << "17. Exportar archivo binario" << endl;
-    cout << "18. Salir" << endl;
+    cout << "--- PAQUETES BINARIOS (.pkg) ---" << endl;
+    cout << "18. Guardar paquete a .pkg" << endl;
+    cout << "19. Cargar paquete desde .pkg" << endl;
+    cout << "20. Verificar integridad del .pkg" << endl;
+    cout << "21. Extraer archivo rapido" << endl;
+    cout << "22. Listar contenido rapido" << endl;
+    cout << "23. Comparar TXT vs PKG" << endl;
+    cout << "24. Salir" << endl;
 
     cout << endl;
 
